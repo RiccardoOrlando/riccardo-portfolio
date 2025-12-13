@@ -47,13 +47,13 @@ a:hover {
 }
 
 /* Bottoni */
-button {
+/* button {
   background-color: var(--brand-red);
   color: var(--white);
   padding: 0.5rem 1rem;
   border-radius: 0.25rem;
   transition: background-color 0.3s;
-}
+} */
 
 button:hover {
   background-color: var(--brand-red-dark);

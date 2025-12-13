@@ -4,7 +4,7 @@
 // ========================================
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
-import Header from "../components/header";
+import Header from "../components/Header";
 import StatsCards from "../components/StatsCard";
 import SplitScreen from "../components/SplitScreen";
 import VideoSplitScreen from "../components/VideoSplitScreen";

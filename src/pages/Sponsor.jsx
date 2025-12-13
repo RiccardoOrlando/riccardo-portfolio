@@ -2,7 +2,7 @@
 // 10. src/pages/Sponsor.jsx
 // ========================================
 import React from "react";
-import Header from "../components/header";
+import Header from "../components/Header";
 import PageBanner from "../components/PageBanner";
 
 export default function Sponsor() {

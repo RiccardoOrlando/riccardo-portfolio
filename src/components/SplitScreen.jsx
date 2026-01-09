@@ -98,7 +98,7 @@ return () => ctx.revert();
           {/* Immagine Destra (F4) - Copre l'intero spazio e definisce la scala */}
           <div className="absolute inset-0">
             <img
-              src="../img/fotomisanointervista.jpg"
+              src="/img/fotomisanointervista.webp"
               alt="Formula 4 Oggi"
               className="w-full h-full object-cover"
             />
@@ -120,7 +120,7 @@ return () => ctx.revert();
                 Siccome React potrebbe non avere containerRef subito, usiamo '100%' come fallback (per il primo render).
              */}
             <img
-              src="../img/FotoMisano.jpg"
+              src="/img/fotomisano.webp"
               alt="Karting Inizio"
               className="absolute inset-0 object-cover max-w-none" 
               style={{ width: `${containerRef.current ? containerRef.current.offsetWidth : '100%'}px` }}

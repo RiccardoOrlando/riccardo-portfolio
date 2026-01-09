@@ -32,7 +32,7 @@ const Storia = () => {
       <PageBanner 
         title="La Mia Storia"
         subtitle="Il percorso che mi ha portato a diventare pilota di Formula 4"
-        imageUrl="/img/fotoimolaesultanza.jpg"
+        imageUrl="/img/fotoimolaesultanza.webp"
         path="Home / Storia"
       />
       <section className="py-24 bg-gray-800 text-white">

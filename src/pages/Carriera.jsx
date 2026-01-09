@@ -396,7 +396,7 @@ const Carriera = () => {
             <PageBanner 
                 title="Carriera"
                 subtitle="Risultati, vittorie e traguardi raggiunti in pista"
-                imageUrl="/img/fotoimolavariantealtauscita.jpg"
+                imageUrl="/img/fotoimolavariantealtauscita.webp"
                 path="Home / Carriera"
             />
 

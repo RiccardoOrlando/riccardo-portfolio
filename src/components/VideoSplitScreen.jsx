@@ -1,56 +1,41 @@
 import React, { useState, useRef, useEffect, useCallback, useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Volume2, VolumeX, Play, Pause } from 'lucide-react';
+import { Volume2, VolumeX, Play, Pause, RefreshCw } from 'lucide-react';
 
-gsap.registerPlugin(ScrollTrigger);
-
-// 🛑 ID definitivi dei tuoi video Vimeo 🛑
 const VIMEO_ID_F4 = '1140843197'; 
-const VIMEO_ID_KART = '1140844159'; 
+const VIMEO_ID_KART = '1148910571'; 
 
-// Funzione helper per costruire l'URL di incorporamento di Vimeo
 const getVimeoEmbedUrl = (id, isMuted, isPlaying) => {
   const params = new URLSearchParams({
-    // L'unico modo per controllare Play/Pause senza API è forzare il ricaricamento con autoplay=0 o autoplay=1
     autoplay: isPlaying ? 1 : 0, 
     loop: 1,     
     muted: isMuted ? 1 : 0, 
-    background: 1, 
-    byline: 0,     
-    portrait: 0,   
-    title: 0,      
-    color: 'e50914'
+    background: 1, // Riduce l'interfaccia di Vimeo per caricare meno asset
+    quality: "720p", // 720p è un ottimo compromesso per non saturare la banda in split
+    transparent: 0
   });
-  // La ricarica dell'iframe tramite 'key' aggiornerà questi parametri
   return `https://player.vimeo.com/video/${id}?${params.toString()}`;
 };
 
 const VideoSplitScreen = () => {
-  // STATI AUDIO SEPARATI
+  const [hasStarted, setHasStarted] = useState(false);
+  const [isSyncMode, setIsSyncMode] = useState(true); // Sync attivo di default
+  
   const [isMutedF4, setIsMutedF4] = useState(true); 
   const [isMutedKart, setIsMutedKart] = useState(true); 
+  const [isPlayingF4, setIsPlayingF4] = useState(false); 
+  const [isPlayingKart, setIsPlayingKart] = useState(false); 
   
-  // NUOVI STATI PLAY/PAUSE SEPARATI
-  const [isPlayingF4, setIsPlayingF4] = useState(true); 
-  const [isPlayingKart, setIsPlayingKart] = useState(true); 
-
   const [isDragging, setIsDragging] = useState(false);
   const [sliderPosition, setSliderPosition] = useState(50); 
-  
-  // STATO CRUCIALE: Dimensioni del contenitore esterno (per allineamento iframe)
-  const [containerDimensions, setContainerDimensions] = useState({ width: 0, height: 0 }); 
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 }); 
 
   const containerRef = useRef(null);
-  const handleRef = useRef(null);
-  
-  // --- LOGICA DIMENSIONI FISSE (Risolve il problema dello zoom) ---
+
   const updateDimensions = useCallback(() => {
     if (containerRef.current) {
-      setContainerDimensions({
-        width: containerRef.current.offsetWidth,
-        height: containerRef.current.offsetHeight,
-      });
+      const { width, height } = containerRef.current.getBoundingClientRect();
+      setDimensions({ width, height });
     }
   }, []);
 
@@ -60,193 +45,173 @@ const VideoSplitScreen = () => {
     return () => window.removeEventListener('resize', updateDimensions);
   }, [updateDimensions]);
 
-  // --- LOGICA DI DRAG & CATTURA GLOBALE (Risolve il problema del blocco) ---
-  
-  const handleMouseDown = (e) => {
-    if (handleRef.current && handleRef.current.contains(e.target)) {
-      setIsDragging(true);
-    }
+  // Gestione Sincronizzata
+  const toggleSyncPlay = () => {
+    const newState = !isPlayingF4;
+    setIsPlayingF4(newState);
+    setIsPlayingKart(newState);
   };
 
-  const handleMouseUp = () => setIsDragging(false);
+  const handleStartAll = () => {
+    setHasStarted(true);
+    setIsPlayingF4(true);
+    setIsPlayingKart(true);
+  };
 
-  const handlePointerMove = useCallback((e) => {
+  const handleMove = useCallback((e) => {
     if (!isDragging || !containerRef.current) return;
-    
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const rect = containerRef.current.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const percentage = (x / rect.width) * 100;
-    
-    setSliderPosition(Math.max(0, Math.min(100, percentage)));
-    
+    const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+    setSliderPosition((x / rect.width) * 100);
   }, [isDragging]);
 
   useEffect(() => {
     if (isDragging) {
-      document.addEventListener('mousemove', handlePointerMove);
-      document.addEventListener('mouseup', handleMouseUp);
-      document.addEventListener('touchmove', handlePointerMove);
-      document.addEventListener('touchend', handleMouseUp);
-      document.body.style.userSelect = 'none';
+      window.addEventListener('mousemove', handleMove);
+      window.addEventListener('mouseup', () => setIsDragging(false));
+      window.addEventListener('touchmove', handleMove);
+      window.addEventListener('touchend', () => setIsDragging(false));
     }
-
     return () => {
-      document.removeEventListener('mousemove', handlePointerMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-      document.removeEventListener('touchmove', handlePointerMove);
-      document.removeEventListener('touchend', handleMouseUp);
-      document.body.style.userSelect = 'auto';
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('touchmove', handleMove);
     };
-  }, [isDragging, handlePointerMove]);
-
-  // Logica GSAP (Animazione di entrata)
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-        gsap.from(containerRef.current, {
-            scale: 0.9,
-            opacity: 0,
-            duration: 1,
-            ease: 'power2.out',
-            scrollTrigger: {
-                trigger: containerRef.current,
-                start: 'top 80%',
-                toggleActions: 'play none none none',
-            }
-        });
-    }, containerRef);
-    return () => ctx.revert();
-  }, []);
-  
-  // --- HANDLER AUDIO & PLAY/PAUSE ---
-  const toggleMuteF4 = () => setIsMutedF4(!isMutedF4);
-  const toggleMuteKart = () => setIsMutedKart(!isMutedKart);
-  
-  const togglePlayPauseF4 = () => setIsPlayingF4(!isPlayingF4);
-  const togglePlayPauseKart = () => setIsPlayingKart(!isPlayingKart);
-
+  }, [isDragging, handleMove]);
 
   return (
-    <div className="w-full py-20 bg-black">
-      <div className="max-w-7xl mx-auto px-4">
+    <div className="w-full py-16 bg-black overflow-hidden">
+      <div className="max-w-6xl mx-auto px-4">
         
-        {/* Intestazione */}
-        <div className="text-center mb-12">
-          <h2 className="text-5xl md:text-6xl font-bold text-white mb-2">
-            Doppio Onboard: Kart vs Monoposto
-          </h2>
-          <p className="text-gray-400 text-lg max-w-xl mx-auto">
-            Trascina per controllare e confrontare le due prospettive.
-          </p>
+        <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
+          <div className="text-left">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-tighter">
+              ONBOARD <span className="text-red-600">COMPARISON</span>
+            </h2>
+            <p className="text-gray-500 uppercase tracking-widest text-xs mt-2">
+              Analisi tecnica: Karting vs Formula 4
+            </p>
+          </div>
+          
+          {/* Toggle Sync Mode */}
+          <button 
+            onClick={() => setIsSyncMode(!isSyncMode)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-all text-xs font-bold ${isSyncMode ? 'bg-red-600 border-red-600 text-white' : 'bg-transparent border-gray-600 text-gray-400'}`}
+          >
+            <RefreshCw size={14} className={isSyncMode ? 'animate-spin-slow' : ''} />
+            {isSyncMode ? 'SYNC MODE ACTIVE' : 'MANUAL MODE'}
+          </button>
         </div>
 
-        {/* Contenitore Splitscreen Video */}
         <div
           ref={containerRef}
-          className="relative w-full aspect-video rounded-3xl overflow-hidden shadow-2xl shadow-red-800/50 select-none"
+          className="relative w-full aspect-video rounded-3xl overflow-hidden bg-zinc-900 shadow-[0_0_50px_rgba(255,0,0,0.2)] select-none border border-white/5"
+          style={{ touchAction: 'none' }}
         >
-          
-          {/* VIDEO DESTRA (F4) - BASE LAYER */}
-          <div className="absolute inset-0">
-            <iframe
-              // Key: isMuted + isPlaying
-              key={`f4-${isMutedF4}-${isPlayingF4}`} 
-              src={getVimeoEmbedUrl(VIMEO_ID_F4, isMutedF4, isPlayingF4)}
-              title="Formula 4 Onboard"
-              frameBorder="0"
-              allow="autoplay; loop; fullscreen; picture-in-picture"
-              allowFullScreen
-              className="absolute inset-0 w-full h-full"
-            />
-            {/* Overlay e Testo F4 */}
-            <div className="absolute inset-0 bg-black/50 pointer-events-none"></div>
-            <div className="absolute bottom-8 right-8 bg-red-600 px-6 py-3 rounded-full z-10 pointer-events-none">
-              <span className="text-white font-bold text-xl">F4 Monoposto</span>
+          {!hasStarted ? (
+            <div 
+              className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-cover bg-center"
+              style={{ backgroundImage: "linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('/img/fotomisano.webp')" }}
+            >
+                <button 
+                  onClick={handleStartAll}
+                  className="group relative flex items-center justify-center w-20 h-20 bg-red-600 rounded-full transition-all hover:scale-110 hover:shadow-[0_0_30px_#FF0000]"
+                >
+                    <Play className="text-white fill-white ml-1" size={28} />
+                </button>
+                <p className="mt-4 text-white font-black tracking-widest text-sm uppercase">Avvia Confronto</p>
+            </div>
+          ) : null}
+
+          {/* VIDEO 1: F4 (Destra/Sotto) */}
+          <div className="absolute inset-0 w-full h-full">
+            {hasStarted && (
+                <iframe
+                  src={getVimeoEmbedUrl(VIMEO_ID_F4, isMutedF4, isPlayingF4)}
+                  className="absolute pointer-events-none"
+                  style={{ width: dimensions.width, height: dimensions.height, border: 'none' }}
+                  allow="autoplay; fullscreen"
+                />
+            )}
+            <div className="absolute bottom-6 right-8 px-3 py-1 bg-red-600 text-white text-[10px] font-black italic rounded-sm z-20 uppercase">
+              F4 Tatuus Gen2
             </div>
           </div>
 
-          {/* VIDEO SINISTRA (Kart) - SLIDER LAYER (Maschera) */}
+          {/* VIDEO 2: KART (Sinistra/Sopra) */}
           <div
-            className="absolute top-0 left-0 h-full overflow-hidden" 
-            style={{ width: `${sliderPosition}%` }} 
+            className="absolute top-0 left-0 h-full overflow-hidden border-r-2 border-red-600 z-10 shadow-2xl"
+            style={{ width: `${sliderPosition}%` }}
           >
-            <iframe
-              // Key: isMuted + isPlaying
-              key={`kart-${isMutedKart}-${isPlayingKart}`} 
-              src={getVimeoEmbedUrl(VIMEO_ID_KART, isMutedKart, isPlayingKart)}
-              title="Karting Onboard"
-              frameBorder="0"
-              allow="autoplay; loop; fullscreen; picture-in-picture"
-              allowFullScreen
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                // FORZA DIMENSIONI FISSE: Risolve lo zoom
-                width: containerDimensions.width, 
-                height: containerDimensions.height,
-              }}
-            />
-            {/* Overlay e Testo Kart */}
-            <div className="absolute inset-0 bg-black/50 pointer-events-none"></div>
-            <div className="absolute bottom-8 left-8 bg-blue-600 px-6 py-3 rounded-full z-10 pointer-events-none">
-              <span className="text-white font-bold text-xl">Karting Inizio</span>
+            {hasStarted && (
+                <iframe
+                  src={getVimeoEmbedUrl(VIMEO_ID_KART, isMutedKart, isPlayingKart)}
+                  className="absolute pointer-events-none"
+                  style={{ width: dimensions.width, height: dimensions.height, left: 0, top: 0, border: 'none' }}
+                  allow="autoplay; fullscreen"
+                />
+            )}
+            <div className="absolute bottom-6 left-8 px-3 py-1 bg-white text-black text-[10px] font-black italic rounded-sm z-20 uppercase">
+              Kart 125cc Shifter
             </div>
           </div>
-          
-          {/* Slider (HANDLE) - Trascinamento */}
+
+          {/* SLIDER HANDLE */}
           <div
-            ref={handleRef} 
-            className="absolute top-0 bottom-0 w-1 bg-white cursor-ew-resize z-40 will-change-transform" 
-            style={{ left: `${sliderPosition}%` }} 
-            onMouseDown={handleMouseDown}
-            onTouchStart={handleMouseDown}
-            onTouchEnd={handleMouseUp}
+            onMouseDown={() => setIsDragging(true)}
+            onTouchStart={() => setIsDragging(true)}
+            className="absolute top-0 bottom-0 z-30 cursor-ew-resize"
+            style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
           >
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-white rounded-full shadow-2xl flex items-center justify-center border-4 border-gray-800">
-              <div className="flex gap-1">
-                <div className="w-1 h-6 bg-gray-800 rounded"></div>
-                <div className="w-1 h-6 bg-gray-800 rounded"></div>
+            <div className="h-full w-0.5 bg-red-600 relative">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-black border-2 border-red-600 rounded-full shadow-2xl flex items-center justify-center">
+                <div className="flex gap-1">
+                  <div className="w-1 h-3 bg-red-600 rounded-full" />
+                  <div className="w-1 h-3 bg-red-600 rounded-full" />
+                </div>
               </div>
             </div>
           </div>
-          
-          {/* ⏯️ Pulsante Play/Pause Kart (Sinistra - Alto) */}
-          <button
-            onClick={togglePlayPauseKart}
-            className="absolute top-6 left-6 p-3 bg-black/50 backdrop-blur-sm rounded-full text-white hover:bg-blue-600 transition-colors duration-300 z-50"
-            aria-label={isPlayingKart ? "Metti in Pausa Kart" : "Avvia Kart"}
-          >
-            {isPlayingKart ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
-          </button>
-          
-          {/* ⏯️ Pulsante Play/Pause F4 (Destra - Alto) */}
-          <button
-            onClick={togglePlayPauseF4}
-            className="absolute top-6 right-6 p-3 bg-black/50 backdrop-blur-sm rounded-full text-white hover:bg-red-600 transition-colors duration-300 z-50"
-            aria-label={isPlayingF4 ? "Metti in Pausa F4" : "Avvia F4"}
-          >
-            {isPlayingF4 ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
-          </button>
 
-          {/* 🔈 Pulsante Mute Video Kart (Sinistra - Basso) */}
-          <button
-            onClick={toggleMuteKart}
-            className="absolute bottom-6 left-6 p-3 bg-black/50 backdrop-blur-sm rounded-full text-white hover:bg-blue-600 transition-colors duration-300 z-50"
-            aria-label={isMutedKart ? "Attiva Audio Kart" : "Disattiva Audio Kart"}
-          >
-            {isMutedKart ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
-          </button>
+          {/* CONTROLLI DINAMICI */}
+          {hasStarted && (
+            <div className="absolute top-6 inset-x-8 flex justify-between z-40 pointer-events-none">
+                {/* Controllo Sinistro (Kart) */}
+                <div className="flex gap-2 pointer-events-auto">
+                  {!isSyncMode && (
+                    <button onClick={() => setIsPlayingKart(!isPlayingKart)} className="p-3 bg-black/60 backdrop-blur-md rounded-xl text-white hover:bg-red-600 transition-all border border-white/10">
+                      {isPlayingKart ? <Pause size={16}/> : <Play size={16}/>}
+                    </button>
+                  )}
+                  <button onClick={() => setIsMutedKart(!isMutedKart)} className="p-3 bg-black/60 backdrop-blur-md rounded-xl text-white hover:bg-red-600 transition-all border border-white/10">
+                    {isMutedKart ? <VolumeX size={16}/> : <Volume2 size={16}/>}
+                  </button>
+                </div>
 
-          {/* 🔈 Pulsante Mute Video F4 (Destra - Basso) */}
-          <button
-            onClick={toggleMuteF4}
-            className="absolute bottom-6 right-6 p-3 bg-black/50 backdrop-blur-sm rounded-full text-white hover:bg-red-600 transition-colors duration-300 z-50"
-            aria-label={isMutedF4 ? "Attiva Audio F4" : "Disattiva Audio F4"}
-          >
-            {isMutedF4 ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
-          </button>
-          
+                {/* Controllo Centrale (Sync Play) */}
+                {isSyncMode && (
+                  <button 
+                    onClick={toggleSyncPlay}
+                    className="pointer-events-auto flex items-center gap-3 px-6 py-2 bg-red-600 rounded-full text-white font-bold shadow-2xl hover:scale-105 transition-transform"
+                  >
+                    {isPlayingF4 ? <Pause size={20} fill="white"/> : <Play size={20} fill="white"/>}
+                    <span className="text-sm">SYNC PLAY</span>
+                  </button>
+                )}
+
+                {/* Controllo Destro (F4) */}
+                <div className="flex gap-2 pointer-events-auto">
+                  <button onClick={() => setIsMutedF4(!isMutedF4)} className="p-3 bg-black/60 backdrop-blur-md rounded-xl text-white hover:bg-red-600 transition-all border border-white/10">
+                    {isMutedF4 ? <VolumeX size={16}/> : <Volume2 size={16}/>}
+                  </button>
+                  {!isSyncMode && (
+                    <button onClick={() => setIsPlayingF4(!isPlayingF4)} className="p-3 bg-black/60 backdrop-blur-md rounded-xl text-white hover:bg-red-600 transition-all border border-white/10">
+                      {isPlayingF4 ? <Pause size={16}/> : <Play size={16}/>}
+                    </button>
+                  )}
+                </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

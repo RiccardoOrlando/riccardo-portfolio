@@ -25,7 +25,7 @@ const PageBanner = ({ title, subtitle, imageUrl, path }) => {
   }, []);
 
   return (
-    <div className="w-full flex overflow-hidden mt-16 h-[250px]">
+    <div className="w-full flex overflow-hidden mt-24 h-[250px]">
       {/* Colonna sinistra: testo */}
       <div
         ref={contentRef}

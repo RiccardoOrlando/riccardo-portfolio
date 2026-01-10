@@ -1,10 +1,25 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export default function Header() {
-  // Configurazione Cloudinary per il logo
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // Controlla lo scroll per cambiare lo sfondo dell'header
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const cloudName = "ddbmmjpal"; 
-  const logoPublicId = "logo_ro_racing"; // Il percorso che hai creato
+  const logoPublicId = "logo_ro_racing"; 
 
   const navItems = [
     { name: "Home", path: "/" },
@@ -17,16 +32,23 @@ export default function Header() {
   ];
 
   return (
-    // Sfondo nero, bordo grigio scuro e testo bianco per coerenza col sito
-    <header className="fixed top-0 left-0 w-full border-b border-zinc-800 z-50 mb-24">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <header 
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+        isScrolled 
+          ? "bg-black/80 backdrop-blur-md py-2 border-b border-zinc-800" 
+          : "bg-transparent py-4"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
         
-        {/* LOGO CLICCABILE INGRANDITO */}
+        {/* LOGO CLICCABILE */}
         <Link to="/" className="transition-transform duration-300 hover:scale-105">
           <img 
             src={`https://res.cloudinary.com/${cloudName}/image/upload/w_300,f_auto,q_auto/${logoPublicId}`} 
             alt="Logo Riccardo Orlando" 
-            className="h-16 w-auto object-contain"
+            className={`transition-all duration-300 object-contain ${
+              isScrolled ? "h-12" : "h-16"
+            }`}
           />
         </Link>
 
@@ -36,7 +58,7 @@ export default function Header() {
               <li key={item.name} className="relative group">
                 <Link
                   to={item.path}
-                  className="font-medium transition-colors duration-300 group-hover:text-red-600 uppercase text-xs tracking-widest"
+                  className="text-white font-medium transition-colors duration-300 group-hover:text-red-600 uppercase text-xs tracking-widest"
                 >
                   {item.name}
                   <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-red-600 transition-all duration-300 group-hover:w-full"></span>

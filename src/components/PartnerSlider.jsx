@@ -1,59 +1,66 @@
 import React from 'react';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
-// 🟢 IMPORTA IL MODULO AutoScroll
 import { AutoScroll } from '@splidejs/splide-extension-auto-scroll'; 
 
-// Assicurati che il CSS di Splide sia importato nel tuo file principale!
+// IMPORTANTE: Assicurati che il CSS sia nel main o qui
+// import '@splidejs/react-splide/css';
 
 const PARTNERS = [
-  { name: 'Red Bull Racing', color: 'bg-blue-600', text: 'text-white' },
-  { name: 'Ferrari', color: 'bg-red-600', text: 'text-white' },
-  { name: 'Mercedes-AMG', color: 'bg-gray-400', text: 'text-gray-900' },
-  { name: 'McLaren', color: 'bg-orange-500', text: 'text-white' },
-  { name: 'Alpine F1', color: 'bg-pink-500', text: 'text-white' },
-  { name: 'Pirelli', color: 'bg-red-900', text: 'text-white' },
-  { name: 'Honda', color: 'bg-red-700', text: 'text-white' },
-  { name: 'Aston Martin', color: 'bg-green-600', text: 'text-white' },
+  { name: 'Red Bull Racing' },
+  { name: 'Ferrari' },
+  { name: 'Mercedes-AMG' },
+  { name: 'McLaren' },
+  { name: 'Alpine F1' },
+  { name: 'Pirelli' },
+  { name: 'Honda' },
+  { name: 'Aston Martin' },
 ];
 
 const PartnerSlider = () => {
-
-  // Opzioni di Splide con AutoScroll
   const options = {
     type: 'loop',            
     drag: 'free',            
     autoWidth: true,         
     arrows: false,           
     pagination: false,       
-    
-    // 🟢 NUOVA CONFIGURAZIONE AUTOSCROLL
     autoScroll: {
-        speed: 0.5,           // Velocità di scorrimento (regola questo valore, 0.5 è medio)
-        pauseOnHover: true,   // Si ferma quando il mouse è sopra
-        pauseOnFocus: true,   // Si ferma quando è a fuoco (per accessibilità)
+        speed: 0.8,           // Leggermente più veloce per dare dinamismo
+        pauseOnHover: true,   
+        pauseOnFocus: false,   
     },
   };
 
   return (
-    <div className="w-full py-16 bg-gray-900 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 mb-8">
-          <h3 className="text-3xl font-bold text-white text-center">I Nostri Partner Ufficiali</h3>
+    <div className="w-full py-20 bg-black border-t border-zinc-900 overflow-hidden">
+      {/* Header coerente con Stats e Profilo */}
+      <div className="max-w-7xl mx-auto px-6 mb-12">
+          <div className="flex flex-col items-center">
+            <h3 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white">
+              Official <span className="text-red-600">Partners</span>
+            </h3>
+            <div className="h-1 w-20 bg-red-600 mt-4"></div>
+          </div>
       </div>
       
-      {/* Implementazione Splide - Usa l'array dei moduli [AutoScroll] */}
-      <div className="cursor-grab active:cursor-grabbing">
+      {/* Container Slider */}
+      <div className="relative cursor-grab active:cursor-grabbing">
+        {/* Overlay sfumati ai bordi per l'effetto "fade" (aggiornati a Nero) */}
+        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none"></div>
+        <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none"></div>
+
         <Splide 
             options={options} 
-            extensions={{ AutoScroll }} // ⬅️ Attiva l'estensione qui
+            extensions={{ AutoScroll }} 
             aria-label="Partner Logos Slider"
         >
           {PARTNERS.map((partner, index) => (
             <SplideSlide key={index}>
-              <div className="flex-shrink-0 w-[200px] h-[100px] p-4 flex items-center justify-center">
+              <div className="px-8 flex items-center justify-center">
                 <div 
-                  className={`w-full h-full rounded-lg shadow-lg flex items-center justify-center border border-gray-700 ${partner.color}`}
+                  className="h-24 px-10 flex items-center justify-center bg-zinc-900/30 border border-zinc-800 rounded-xl hover:border-red-600/50 hover:bg-zinc-900/60 transition-all duration-500 group"
+                  style={{ minWidth: '220px' }}
                 >
-                  <span className={`text-lg font-bold ${partner.text}`}>
+                  <span className="text-xl font-black italic uppercase tracking-widest text-zinc-500 group-hover:text-white transition-colors duration-500">
                     {partner.name}
                   </span>
                 </div>
@@ -63,10 +70,11 @@ const PartnerSlider = () => {
         </Splide>
       </div>
         
-      {/* Sfumature laterali (Fade) */}
-      <div className="relative">
-        <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-gray-900 to-transparent pointer-events-none -mt-[100px]"></div>
-        <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-gray-900 to-transparent pointer-events-none -mt-[100px]"></div>
+      {/* Sottotitolo Minimal */}
+      <div className="text-center mt-8">
+        <p className="text-zinc-600 text-[10px] uppercase font-bold tracking-[0.4em] opacity-50">
+          Driven by excellence
+        </p>
       </div>
     </div>
   );

@@ -80,7 +80,7 @@ const VideoSplitScreen = () => {
   }, [isDragging, handleMove]);
 
   return (
-    <div className="w-full py-16 bg-black overflow-hidden">
+    <div className="w-full py-30 bg-black overflow-hidden">
       <div className="max-w-6xl mx-auto px-4">
         
         <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">

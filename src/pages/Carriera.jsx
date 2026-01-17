@@ -13,8 +13,8 @@ const careerData = [
     {
         year: '2025',
         category: 'Focus Formula 4 & Campionato KZ2',
-        team: 'Il tuo Team F4/KZ2',
-        engine: 'TM Racing / Motore F4',
+        team: 'Technorace Competition / Gp Racing Karts',
+        engine: 'TM Racing / Tatuus F4-T014',
         summary: [
             { icon: <Zap className="w-6 h-6" />, label: 'Vittorie F4 (Parziali)', value: '4' }, 
             { icon: <Award className="w-6 h-6" />, label: 'Obiettivo', value: 'Formula Regional' },
@@ -102,7 +102,7 @@ const careerData = [
     {
         year: '2024',
         category: 'Campione Siciliano Assoluto Karting Sicilia',
-        team: 'Il tuo Team Kart 2024',
+        team: 'Gp Racing Karts',
         engine: 'TM Racing (125cc) / F4 Testing',
         summary: [
             { icon: <Trophy className="w-6 h-6" />, label: 'Titolo Vinto', value: 'Campione Siciliano Assoluto' },
@@ -215,7 +215,7 @@ const careerData = [
     {
         year: '2023',
         category: 'Campione Assoluto Karting Sicilia',
-        team: 'Il tuo Team Kart 2023',
+        team: 'Gp Racing Karts',
         engine: '125cc (KZ2/KZN)',
         summary: [
             { icon: <Trophy className="w-6 h-6" />, label: 'Titolo Vinto', value: 'Campione Assoluto' }, 
@@ -287,7 +287,7 @@ const careerData = [
     {
         year: '2022',
         category: 'Inizi del Successo nel Karting',
-        team: 'Karting Sicilia / Team Privato',
+        team: 'Karting Sicilia / Gp Racing Karts',
         engine: '125cc',
         summary: [
             { icon: <Trophy className="w-6 h-6" />, label: 'Vittorie', value: '1' }, 
@@ -361,7 +361,7 @@ const careerData = [
 
 const Carriera = () => {
     // Stato per espandere l'Anno (Livello 1)
-    const [expandedYear, setExpandedYear] = useState('2024'); 
+    const [expandedYear, setExpandedYear] = useState(null); 
     // Stato per espandere il Campionato (Livello 2)
     const [expandedChampionship, setExpandedChampionship] = useState(null);
     // Stato per espandere l'Evento (Livello 3)

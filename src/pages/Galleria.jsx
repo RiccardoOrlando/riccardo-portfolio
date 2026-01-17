@@ -10,8 +10,7 @@ const getImg = (publicId, type = 'thumb') => {
   const cloudName = "ddbmmjpal"; 
   const baseUrl = `https://res.cloudinary.com/${cloudName}/image/upload`;
   
-  // f_auto: sceglie il formato migliore (webp/avif)
-  // q_auto: ottimizza il peso senza perdere qualità visibile
+  // f_auto: ottimizza il formato, q_auto: ottimizza la qualità
   const transformations = type === 'cover' 
     ? 'w_800,h_1000,c_fill,g_auto,f_auto,q_auto' 
     : 'w_1400,f_auto,q_auto'; 
@@ -20,14 +19,15 @@ const getImg = (publicId, type = 'thumb') => {
 };
 
 const GalleriaMotorsport = () => {
-  // Impostiamo l'anno più recente disponibile come default
-  const [activeYear, setActiveYear] = useState("2025");
+  // 2026 impostato come stagione di default
+  const [activeYear, setActiveYear] = useState("2026");
   const [openEvent, setOpenEvent] = useState(null);
   const gridRef = useRef(null);
 
-  const years = Object.keys(galleryData).sort((a, b) => b - a);
+  // Lista anni richiesta
+  const years = ["2026", "2025", "2024", "2023"];
 
-  // Animazione GSAP all'apertura della pagina o cambio anno
+  // Animazione GSAP all'ingresso delle card
   useEffect(() => {
     gsap.fromTo(".event-card", 
       { opacity: 0, y: 30 }, 
@@ -54,7 +54,7 @@ const GalleriaMotorsport = () => {
             <div className="h-1 w-24 bg-red-600"></div>
           </div>
 
-          {/* SELETTORE ANNI */}
+          {/* SELETTORE ANNI (SKEW DESIGN) */}
           <div className="flex flex-wrap gap-4 mb-16">
             {years.map(year => (
               <button
@@ -70,14 +70,14 @@ const GalleriaMotorsport = () => {
             ))}
           </div>
 
-          {/* GRIGLIA EVENTI (CARD) */}
+          {/* GRIGLIA EVENTI / EMPTY STATE */}
           <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {galleryData[activeYear]?.length > 0 ? (
               galleryData[activeYear].map((event) => (
                 <div 
                   key={event.id}
                   onClick={() => setOpenEvent(event)}
-                  className="event-card group relative aspect-[4/5] cursor-pointer overflow-hidden rounded-xl bg-zinc-900 shadow-2xl"
+                  className="event-card group relative aspect-[4/5] cursor-pointer overflow-hidden rounded-xl bg-zinc-900 shadow-2xl border border-white/5"
                 >
                   <img 
                     src={getImg(event.coverId, 'cover')} 
@@ -92,48 +92,69 @@ const GalleriaMotorsport = () => {
                     <h3 className="text-3xl font-black italic uppercase leading-tight mb-6">{event.title}</h3>
                     <div className="flex items-center gap-2 text-sm font-bold text-white/60 group-hover:text-white transition-colors">
                       <Camera size={18}/> 
-                      <span>Guarda {event.photos.length} foto</span>
+                      <span>Visualizza {event.photos.length} scatti</span>
                       <ChevronRight size={18} className="group-hover:translate-x-2 transition-transform"/>
                     </div>
                   </div>
                 </div>
               ))
             ) : (
-              <p className="text-zinc-500 italic">Nessun evento registrato per questo anno.</p>
+              /* BOX PROFESSIONALE PER ANNI SENZA FOTO */
+              <div className="col-span-full py-24 border-2 border-dashed border-zinc-800 rounded-3xl flex flex-col items-center justify-center text-center bg-zinc-900/20">
+                <div className="mb-6 p-6 bg-zinc-900 rounded-full text-zinc-700 ring-1 ring-zinc-800">
+                   <Camera size={48} strokeWidth={1} />
+                </div>
+                <h3 className="text-2xl font-black italic uppercase text-zinc-400 mb-3 tracking-tight">
+                    Contenuti Stagione {activeYear} in arrivo
+                </h3>
+                <p className="text-zinc-600 max-w-md mx-auto font-medium leading-relaxed">
+                  I media ufficiali sono attualmente in fase di selezione e post-produzione. 
+                  La galleria verrà aggiornata subito dopo i prossimi weekend di gara.
+                </p>
+              </div>
             )}
           </div>
         </div>
 
-        {/* MODALE FULLSCREEN (DETTAGLIO FOTO) */}
+        {/* MODALE FULLSCREEN (GALLERIA INTERNA) */}
         {openEvent && (
           <div className="fixed inset-0 z-[100] bg-black overflow-y-auto">
-            {/* Header Modale Sticky */}
-            <div className="sticky top-0 z-[110] flex justify-between items-center p-6 bg-black/90 backdrop-blur-xl border-b border-white/10">
+            {/* Navigazione Modale */}
+            <div className="sticky top-0 z-[110] flex justify-between items-center p-6 bg-black/95 backdrop-blur-xl border-b border-white/10">
               <div>
-                <h2 className="text-2xl font-black italic uppercase text-white">{openEvent.title}</h2>
-                <p className="text-zinc-400 text-sm uppercase tracking-widest">{activeYear}</p>
+                <h2 className="text-2xl font-black italic uppercase text-white tracking-tight">{openEvent.title}</h2>
+                <p className="text-red-600 text-sm font-bold uppercase tracking-[0.3em]">{activeYear} Official Gallery</p>
               </div>
               <button 
                 onClick={() => setOpenEvent(null)}
-                className="p-4 bg-red-600 text-white rounded-full hover:bg-red-700 hover:scale-110 transition-all shadow-lg"
+                className="p-4 bg-red-600 text-white rounded-full hover:bg-red-700 hover:scale-110 transition-all shadow-lg active:scale-95"
               >
                 <X size={28} />
               </button>
             </div>
             
-            {/* Griglia Foto Masonry-style */}
+            {/* Griglia Masonry */}
             <div className="p-6 md:p-12 columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-               {openEvent.photos.map((photoId, index) => (
-                 <div key={photoId} className="overflow-hidden rounded-lg bg-zinc-900 group border border-white/5">
-                   <img 
-                     src={getImg(photoId, 'thumb')} 
-                     className="w-full h-auto hover:scale-105 transition-transform duration-700 cursor-zoom-in" 
-                     // Estraiamo il numero dal publicId (es: 2025_mugello_22 -> Foto 22)
-                     alt={`Foto ${photoId.split('_').pop()}`}
-                     loading="lazy"
-                   />
-                 </div>
-               ))}
+                {openEvent.photos.map((photoId) => (
+                  <div key={photoId} className="overflow-hidden rounded-xl bg-zinc-900 group border border-white/5 shadow-xl">
+                    <img 
+                      src={getImg(photoId, 'thumb')} 
+                      className="w-full h-auto hover:scale-105 transition-transform duration-700 cursor-zoom-in" 
+                      alt="Motorsport Session Shot"
+                      loading="lazy"
+                    />
+                  </div>
+                ))}
+            </div>
+            
+            {/* Bottone chiusura a fine pagina */}
+            <div className="flex justify-center pb-20 pt-10">
+                <button 
+                  onClick={() => setOpenEvent(null)}
+                  className="px-12 py-4 bg-zinc-900 text-white font-black italic uppercase tracking-widest border border-zinc-800 hover:bg-red-600 hover:border-red-600 transition-all transform -skew-x-12"
+                >
+                   <span className="inline-block skew-x-12">Torna alla Galleria</span>
+                </button>
             </div>
           </div>
         )}

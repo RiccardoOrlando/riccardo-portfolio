@@ -10,6 +10,9 @@ const SplitScreen = () => {
   const [containerWidth, setContainerWidth] = useState(0);
   const containerRef = useRef(null);
 
+  // URL Cloudinary ottimizzato con auto-format e auto-quality
+  const kartingImageUrl = "https://res.cloudinary.com/ddbmmjpal/image/upload/f_auto,q_auto/v1768702753/immagine_sito_Cremona_2023.jpg";
+
   useEffect(() => {
     const updateWidth = () => {
       if (containerRef.current) {
@@ -76,7 +79,7 @@ const SplitScreen = () => {
           ref={containerRef}
           className="relative w-full h-[450px] md:h-[600px] md:w-[1200px] rounded-3xl overflow-hidden border border-zinc-800 shadow-2xl select-none bg-zinc-900"
         >
-          {/* Layer Destra (Base) */}
+          {/* Layer Destra (Base - Formula 4) */}
           <div className="absolute inset-0 z-0">
             <img
               src="/img/fotomisanointervista.webp"
@@ -91,15 +94,15 @@ const SplitScreen = () => {
             </div>
           </div>
 
-          {/* Layer Sinistra (Overlay) */}
+          {/* Layer Sinistra (Overlay - Karting Cloudinary) */}
           <div
             className="absolute inset-0 z-20 overflow-hidden"
             style={{ width: `${sliderPosition}%` }}
           >
             <div style={{ width: containerWidth }} className="h-full relative">
               <img
-                src="/img/fotomisano.webp"
-                alt="Karting"
+                src={kartingImageUrl}
+                alt="Karting Cremona 2023"
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
@@ -125,7 +128,6 @@ const SplitScreen = () => {
           >
             <div className="absolute top-0 bottom-0 w-[2px] bg-red-600 shadow-[0_0_15px_rgba(220,38,38,0.8)]"></div>
             
-            {/* Cerchio richiesto */}
             <div className="relative w-12 h-12 bg-black rounded-full border-2 border-red-600 flex items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.8)] pointer-events-none">
               <div className="flex gap-1">
                 <div className="w-1 h-4 bg-red-600"></div>
@@ -135,7 +137,7 @@ const SplitScreen = () => {
             </div>
           </div>
 
-          {/* Badge Centrale (Evolution History) */}
+          {/* Badge Centrale */}
           <div className="absolute top-10 left-1/2 transform -translate-x-1/2 pointer-events-none z-30">
             <div className="bg-black/80 backdrop-blur-md px-6 py-2 rounded-full border border-zinc-800 shadow-xl">
               <span className="text-white font-black italic uppercase tracking-tighter text-lg md:text-xl">
@@ -145,11 +147,11 @@ const SplitScreen = () => {
           </div>
         </div>
 
-        {/* Stats Grid */}
+        {/* Stats Grid con Dati Affidabili */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-12 relative z-10">
           {[
-            { label: "Ore in pista", val: "1200+" },
-            { label: "Titoli Regionali", val: "3" },
+            { label: "Km in pista", val: "+3500" },
+            { label: "Titoli Vinti", val: "3" },
             { label: "Obiettivo", val: "F1" }
           ].map((s, i) => (
             <div key={i} className="bg-zinc-900/30 p-8 rounded-2xl border border-zinc-800 text-center hover:border-red-600/30 transition-all duration-500">

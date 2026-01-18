@@ -1,8 +1,5 @@
-// ========================================
-// 2. src/App.jsx
-// ========================================
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom'; // Aggiunto useLocation
 import Home from './pages/Home';
 import Storia from './pages/Storia';
 import Carriera from './pages/Carriera';
@@ -12,6 +9,29 @@ import Sponsor from './pages/Sponsor';
 import Contatti from './pages/Contatti';
 
 function App() {
+  // 1. Devi inizializzare l'hook useLocation per "sentire" il cambio di pagina
+  const location = useLocation();
+
+  useEffect(() => {
+    // 2. I nomi qui devono essere UGUALI ai path che hai scritto nei <Route /> sotto
+    const pageTitles = {
+      "/": "Riccardo | Official Driver Website",
+      "/storia": "La mia Storia | Riccardo",
+      "/carriera": "Carriera e Risultati | Riccardo",
+      "/galleria": "Galleria Foto | Riccardo",
+      "/profilo": "Profilo Pilota | Riccardo",
+      "/sponsor": "Partner & Sponsor | Riccardo",
+      "/contatti": "Contattami | Riccardo"
+    };
+
+    // 3. Applichiamo il titolo
+    document.title = pageTitles[location.pathname] || "Riccardo | Official Driver";
+    
+    // Log di controllo (puoi rimuoverlo dopo che vedi che funziona)
+    console.log("Pagina attuale:", location.pathname);
+    
+  }, [location]); // Ora location è definito e l'effetto si attiva al cambio pagina
+
   return (
     <Routes>
       <Route path="/" element={<Home />} />

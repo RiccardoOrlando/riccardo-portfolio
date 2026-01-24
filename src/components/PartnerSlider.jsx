@@ -5,10 +5,16 @@ import '@splidejs/react-splide/css';
 
 const PARTNERS = [
   { 
+    name: 'Giusi Campisi Parrucchieria', 
+    logo: 'https://res.cloudinary.com/ddbmmjpal/image/upload/f_auto,q_auto/v1768518255/logomamma.png', 
+    type: 'Main Sponsor',
+    isInverted: true 
+  },
+  { 
     name: 'Technorace Competition', 
     logo: 'https://res.cloudinary.com/ddbmmjpal/image/upload/f_auto,q_auto/v1768518257/logo_technorace_competition.png', 
     type: 'F4 Official Team',
-    isInverted: false // Logo già visibile
+    isInverted: false 
   },
   { 
     name: 'GP Racing', 
@@ -26,7 +32,7 @@ const PARTNERS = [
     name: 'Sparco', 
     logo: 'https://res.cloudinary.com/ddbmmjpal/image/upload/f_auto,q_auto/v1768518257/sparco-1.png', 
     type: 'Racing Equipment',
-    isInverted: true // QUESTO DIVENTERÀ BIANCO
+    isInverted: true 
   },
   { 
     name: 'Arai', 

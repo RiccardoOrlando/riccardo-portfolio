@@ -7,6 +7,7 @@ import Galleria from './pages/Galleria';
 import Profilo from './pages/Profilo';
 import Sponsor from './pages/Sponsor';
 import Contatti from './pages/Contatti';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   // 1. Devi inizializzare l'hook useLocation per "sentire" il cambio di pagina
@@ -33,6 +34,8 @@ function App() {
   }, [location]); // Ora location è definito e l'effetto si attiva al cambio pagina
 
   return (
+    <>
+    <ScrollToTop />
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/storia" element={<Storia />} />
@@ -42,6 +45,7 @@ function App() {
       <Route path="/sponsor" element={<Sponsor />} />
       <Route path="/contatti" element={<Contatti />} />
     </Routes>
+    </>
   );
 }
 

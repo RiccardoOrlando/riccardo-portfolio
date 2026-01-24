@@ -103,23 +103,23 @@ const VideoSplitScreen = () => {
 
   return (
     // Z-INDEX BASSO PER IL WRAPPER ESTERNO
-    <div className="relative z-10 w-full py-12 md:py-16 bg-black select-none font-sans text-white">
+    <div className="relative z-10 w-full py-8 md:py-16 bg-black select-none font-sans text-white">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-8 md:mb-10 gap-6 text-center md:text-left">
+        {/* Header - Testi ridimensionati per mobile */}
+        <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-6 md:mb-10 gap-4 md:gap-6 text-center md:text-left">
           <div>
-            <h2 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black italic tracking-tighter uppercase leading-none">
+            <h2 className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-black italic tracking-tighter uppercase leading-none">
               ONBOARD <span className="text-red-600">COMPARISON</span>
             </h2>
-            <div className="h-1 md:h-1.5 w-16 md:w-24 bg-red-600 mt-4 mx-auto md:mx-0"></div>
+            <div className="h-1 md:h-1.5 w-12 md:w-24 bg-red-600 mt-3 md:mt-4 mx-auto md:mx-0"></div>
           </div>
           
           <button 
             onClick={() => setIsSyncMode(!isSyncMode)}
-            className={`flex items-center gap-3 px-6 md:px-8 py-2 md:py-3 rounded-full border-2 transition-all font-black italic text-[10px] md:text-xs tracking-widest ${isSyncMode ? 'bg-red-600 border-red-600 text-white' : 'bg-transparent border-zinc-700 text-zinc-500'}`}
+            className={`flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2 md:py-3 rounded-full border-2 transition-all font-black italic text-[9px] md:text-xs tracking-widest ${isSyncMode ? 'bg-red-600 border-red-600 text-white' : 'bg-transparent border-zinc-700 text-zinc-500'}`}
           >
-            <RefreshCw size={14} className={isSyncMode ? 'animate-spin' : ''} />
+            <RefreshCw size={12} className={`md:w-[14px] md:h-[14px] ${isSyncMode ? 'animate-spin' : ''}`} />
             {isSyncMode ? 'SYNC MODE: ON' : 'MANUAL MODE'}
           </button>
         </div>
@@ -128,7 +128,7 @@ const VideoSplitScreen = () => {
         <div className="relative shadow-2xl overflow-hidden rounded-xl md:rounded-3xl border border-white/10">
           <div ref={containerRef} className="relative w-full aspect-video bg-black">
             
-            {/* Start Overlay (z-index ridotto) */}
+            {/* Start Overlay */}
             {!hasStarted && (
               <div className="absolute inset-0 z-40 flex items-center justify-center bg-black/90 backdrop-blur-md">
                 <button onClick={handleStartAll} className="w-16 h-16 md:w-24 md:h-24 bg-red-600 rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-2xl">
@@ -163,7 +163,7 @@ const VideoSplitScreen = () => {
               </div>
             </div>
 
-            {/* Handle Slider (z-index ridotto a 20) */}
+            {/* Handle Slider */}
             <div
               onMouseDown={() => setIsDragging(true)}
               onTouchStart={() => setIsDragging(true)}
@@ -178,37 +178,42 @@ const VideoSplitScreen = () => {
               </div>
             </div>
 
-            {/* DESKTOP CONTROLS (z-index 30 per stare sopra il video ma sotto l'header esterno) */}
+            {/* CONTROLS */}
             {hasStarted && (
-              <div className="hidden md:block absolute inset-x-0 bottom-0 z-30 p-6 bg-gradient-to-t from-black via-black/40 to-transparent">
+              <div className="absolute inset-x-0 bottom-0 z-30 p-2 md:p-6 bg-gradient-to-t from-black via-black/60 to-transparent">
                 <div className="flex items-center justify-between pointer-events-none">
-                  <div className="flex items-center gap-3 pointer-events-auto">
-                    <button onClick={() => setIsMutedKart(!isMutedKart)} className="p-3 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-md">
-                      {isMutedKart ? <VolumeX size={18}/> : <Volume2 size={18}/>}
+                  
+                  {/* Gruppo Sinistra */}
+                  <div className="flex items-center gap-2 md:gap-3 pointer-events-auto">
+                    <button onClick={() => setIsMutedKart(!isMutedKart)} className="p-2 md:p-3 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-md">
+                      {isMutedKart ? <VolumeX size={14} className="md:w-[18px] md:h-[18px]"/> : <Volume2 size={14} className="md:w-[18px] md:h-[18px]"/>}
                     </button>
                     {!isSyncMode && (
                       <button onClick={() => { setIsPlayingKart(!isPlayingKart); isPlayingKart ? videoKartRef.current.pause() : videoKartRef.current.play(); }} 
-                        className="px-4 py-2 bg-white text-black rounded-lg font-black text-[10px] uppercase italic transition-transform active:scale-95">
-                        {isPlayingKart ? <Pause size={12} fill="black"/> : <Play size={12} fill="black"/>} KART
+                        className="px-2 py-1 md:px-4 md:py-2 bg-white text-black rounded-lg font-black text-[9px] md:text-[10px] uppercase italic transition-transform active:scale-95 flex items-center gap-1">
+                        {isPlayingKart ? <Pause size={10} fill="black"/> : <Play size={10} fill="black"/>} <span className="hidden sm:inline">KART</span>
                       </button>
                     )}
                   </div>
 
+                  {/* Gruppo Centro: SYNC PLAY (Ridotto ulteriormente per mobile) */}
                   {isSyncMode && (
-                    <button onClick={toggleSyncPlay} className="pointer-events-auto flex flex-row items-center gap-3 px-8 py-3 bg-red-600 text-white rounded-full font-black text-xs uppercase italic shadow-lg active:scale-95">
-                      {isPlayingF4 ? <Pause size={16} fill="white"/> : <Play size={16} fill="white"/>} <span>SYNC PLAY</span>
+                    <button onClick={toggleSyncPlay} className="pointer-events-auto flex flex-row items-center gap-1.5 md:gap-3 px-3 py-1.5 md:px-8 md:py-3 bg-red-600 text-white rounded-full font-black text-[9px] md:text-xs uppercase italic shadow-lg active:scale-95">
+                      {isPlayingF4 ? <Pause size={12} className="md:w-[16px] md:h-[16px]" fill="white"/> : <Play size={12} className="md:w-[16px] md:h-[16px]" fill="white"/>} 
+                      <span>SYNC <span className="hidden sm:inline">PLAY</span></span>
                     </button>
                   )}
 
-                  <div className="flex items-center gap-3 pointer-events-auto">
+                  {/* Gruppo Destra */}
+                  <div className="flex items-center gap-2 md:gap-3 pointer-events-auto">
                     {!isSyncMode && (
                       <button onClick={() => { setIsPlayingF4(!isPlayingF4); isPlayingF4 ? videoF4Ref.current.pause() : videoF4Ref.current.play(); }} 
-                        className="px-4 py-2 bg-red-600 text-white rounded-lg font-black text-[10px] uppercase italic transition-transform active:scale-95">
-                        {isPlayingF4 ? <Pause size={12} fill="white"/> : <Play size={12} fill="white"/>} F4
+                        className="px-2 py-1 md:px-4 md:py-2 bg-red-600 text-white rounded-lg font-black text-[9px] md:text-[10px] uppercase italic transition-transform active:scale-95 flex items-center gap-1">
+                        {isPlayingF4 ? <Pause size={10} fill="white"/> : <Play size={10} fill="white"/>} <span className="hidden sm:inline">F4</span>
                       </button>
                     )}
-                    <button onClick={() => setIsMutedF4(!isMutedF4)} className="p-3 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-md">
-                      {isMutedF4 ? <VolumeX size={18}/> : <Volume2 size={18}/>}
+                    <button onClick={() => setIsMutedF4(!isMutedF4)} className="p-2 md:p-3 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-md">
+                      {isMutedF4 ? <VolumeX size={14} className="md:w-[18px] md:h-[18px]"/> : <Volume2 size={14} className="md:w-[18px] md:h-[18px]"/>}
                     </button>
                   </div>
                 </div>
@@ -217,26 +222,26 @@ const VideoSplitScreen = () => {
           </div>
         </div>
 
-        {/* Labels e Paragrafi (invariati) */}
-        <div className="mt-4 flex justify-between px-2 text-zinc-500 font-black italic uppercase tracking-widest text-[8px] md:text-[10px]">
+        {/* Labels e Paragrafi ridotti */}
+        <div className="mt-3 md:mt-4 flex justify-between px-1 md:px-2 text-zinc-500 font-black italic uppercase tracking-widest text-[7px] md:text-[10px]">
           <span>Karting Champion - Triscina</span>
           <span>F4 Tatuus Gen2 - Vallelunga</span>
         </div>
 
-        <div className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-          <div className="bg-zinc-900/30 p-6 md:p-8 rounded-3xl border border-white/5 hover:border-red-600/20 transition-all group">
-            <h4 className="text-white text-sm font-black uppercase mb-4 tracking-[0.2em] italic flex items-center gap-3">
-              <div className="w-2 h-4 bg-red-600 transform -skew-x-12"></div> Technical Focus
+        <div className="mt-8 md:mt-16 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+          <div className="bg-zinc-900/30 p-5 md:p-8 rounded-2xl md:rounded-3xl border border-white/5 hover:border-red-600/20 transition-all group">
+            <h4 className="text-white text-xs md:text-sm font-black uppercase mb-3 md:mb-4 tracking-[0.2em] italic flex items-center gap-3">
+              <div className="w-1.5 h-3 md:w-2 md:h-4 bg-red-600 transform -skew-x-12"></div> Technical Focus
             </h4>
-            <p className="text-zinc-500 text-sm leading-relaxed font-bold italic uppercase tracking-tight group-hover:text-zinc-300 transition-colors">
+            <p className="text-zinc-500 text-xs md:text-sm leading-relaxed font-bold italic uppercase tracking-tight group-hover:text-zinc-300 transition-colors">
               Confronto dei punti di staccata e velocità di percorrenza curva tra la dinamica ultra-reattiva del Karting e il carico aerodinamico della Formula 4.
             </p>
           </div>
-          <div className="bg-zinc-900/30 p-6 md:p-8 rounded-3xl border border-white/5 hover:border-red-600/20 transition-all group">
-            <h4 className="text-white text-sm font-black uppercase mb-4 tracking-[0.2em] italic flex items-center gap-3">
-              <div className="w-2 h-4 bg-red-600 transform -skew-x-12"></div> Driving Evolution
+          <div className="bg-zinc-900/30 p-5 md:p-8 rounded-2xl md:rounded-3xl border border-white/5 hover:border-red-600/20 transition-all group">
+            <h4 className="text-white text-xs md:text-sm font-black uppercase mb-3 md:mb-4 tracking-[0.2em] italic flex items-center gap-3">
+              <div className="w-1.5 h-3 md:w-2 md:h-4 bg-red-600 transform -skew-x-12"></div> Driving Evolution
             </h4>
-            <p className="text-zinc-500 text-sm leading-relaxed font-bold italic uppercase tracking-tight group-hover:text-zinc-300 transition-colors">
+            <p className="text-zinc-500 text-xs md:text-sm leading-relaxed font-bold italic uppercase tracking-tight group-hover:text-zinc-300 transition-colors">
               L'onboard evidenzia come il passaggio alle ruote scoperte richieda una gestione dei freni più modulata rispetto all'aggressività necessaria nel karting.
             </p>
           </div>

@@ -115,3 +115,16 @@ section {
 html {
   scroll-behavior: smooth;
 }
+
+
+.container {
+  display: flex;
+  flex-direction: row; /* Desktop */
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column; /* Mobile */
+  }
+}
+

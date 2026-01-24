@@ -360,205 +360,170 @@ const careerData = [
 ];
 
 const Carriera = () => {
-    // Stato per espandere l'Anno (Livello 1)
     const [expandedYear, setExpandedYear] = useState(null); 
-    // Stato per espandere il Campionato (Livello 2)
     const [expandedChampionship, setExpandedChampionship] = useState(null);
-    // Stato per espandere l'Evento (Livello 3)
     const [expandedEvent, setExpandedEvent] = useState(null);
 
     const toggleYear = (year) => {
-        if (expandedYear === year) {
-            setExpandedYear(null);
-        } else {
-            setExpandedYear(year);
-        }
+        setExpandedYear(expandedYear === year ? null : year);
         setExpandedChampionship(null);
         setExpandedEvent(null);
     };
 
-    const toggleChampionship = (championshipName) => {
-        if (expandedChampionship === championshipName) {
-            setExpandedChampionship(null);
-        } else {
-            setExpandedChampionship(championshipName);
-        }
-        setExpandedEvent(null);
-    };
-
-    const toggleEvent = (eventName) => {
-        setExpandedEvent(expandedEvent === eventName ? null : eventName);
-    };
-
     return (
-        <>
+        <div className="overflow-x-hidden">
             <Header />
             <PageBanner 
                 title="Carriera"
-                subtitle="Risultati, vittorie e traguardi raggiunti in pista"
+                subtitle="Risultati e traguardi in pista"
                 imageUrl="/img/fotoimolavariantealtauscita.webp"
                 path="Home / Carriera"
             />
-<section className="py-20 bg-[#020202] text-zinc-100 relative overflow-hidden">
-  {/* BACKGROUND GRADIENT COMPLESSO - Effetto Mesh più vibrante */}
-  <div className="absolute top-[-10%] left-[-10%] w-[70%] h-[70%] bg-rose-600/15 rounded-full blur-[140px] pointer-events-none" />
-  <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-blue-700/15 rounded-full blur-[140px] pointer-events-none" />
-  <div className="absolute top-[30%] left-[40%] w-[40%] h-[40%] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none" />
 
-  <div className="max-w-6xl mx-auto px-4 relative z-10">
-    
-    {/* TITOLO SEZIONE - Più compatto */}
-    <div className="text-center mb-16">
-      <h2 className="text-5xl md:text-6xl font-black uppercase italic tracking-tighter text-white leading-none">
-        Il Mio <span className="bg-gradient-to-r from-rose-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">Palmarès</span>
-      </h2>
-      <div className="h-1 w-20 bg-rose-600 mx-auto mt-4 -skew-x-12 shadow-[0_0_15px_rgba(225,29,72,0.8)]"></div>
-    </div>
-
-    <div className="space-y-10">
-      {careerData.map((data, index) => (
-        <div 
-          key={index} 
-          className="group relative bg-zinc-900/30 backdrop-blur-xl rounded-2xl border border-white/10 transition-all duration-500 hover:border-rose-500/40 overflow-hidden"
-        >
-          {/* Sottile bagliore interno al passaggio del mouse */}
-          <div className="absolute inset-0 bg-gradient-to-br from-rose-600/10 via-transparent to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-          <div className="p-6 md:p-8 relative z-10">
-            {/* HEADER ANNO - Rimpicciolito */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8">
-              <div className="flex items-center gap-5">
-                <span className="text-6xl font-black italic tracking-tighter text-white/10 group-hover:text-rose-500/40 transition-colors duration-500 leading-none">
-                  {data.year}
-                </span>
-                <div>
-                  <h3 className="text-2xl font-black uppercase italic text-white leading-tight">{data.category}</h3>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-rose-500 mt-1">
-                    {data.team} <span className="mx-2 text-zinc-700">|</span> {data.engine}
-                  </p>
+            <section className="py-12 md:py-20 bg-[#020202] text-zinc-100 relative">
+                {/* Background Blobs ridimensionati per non pesare sul rendering */}
+                <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+                    <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-rose-600/10 blur-[120px]" />
+                    <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-700/10 blur-[120px]" />
                 </div>
-              </div>
-            </div>
 
-            {/* QUICK STATS - Più piccole e compatte */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8">
-              {data.summary.map((stat, statIndex) => (
-                <div key={statIndex} className="bg-white/5 border border-white/5 p-4 rounded-xl flex items-center justify-between group/stat hover:bg-white/10 transition-all">
-                  <div>
-                    <p className="text-[9px] text-zinc-500 uppercase font-black tracking-widest mb-0.5">{stat.label}</p>
-                    <p className="text-2xl font-black text-white italic leading-none">{stat.value}</p>
-                  </div>
-                  <div className="text-rose-500 opacity-60 group-hover/stat:opacity-100 transition-opacity transform scale-90 group-hover/stat:scale-100">
-                    {stat.icon}
-                  </div>
-                </div>
-              ))}
-            </div>
+                <div className="max-w-5xl mx-auto px-5 relative z-10">
+                    
+                    {/* TITOLO - Più contenuto */}
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl md:text-5xl font-black uppercase italic tracking-tighter text-white">
+                            Il Mio <span className="bg-gradient-to-r from-rose-500 to-blue-500 bg-clip-text text-transparent">Palmarès</span>
+                        </h2>
+                        <div className="h-1 w-16 bg-rose-600 mx-auto mt-3 -skew-x-12"></div>
+                    </div>
 
-            {/* BOTTONE ACCORDION - Snello e moderno */}
-            <button
-              onClick={() => toggleYear(data.year)}
-              className={`w-full flex justify-between items-center py-3.5 px-6 rounded-xl font-black uppercase italic text-xs tracking-[0.15em] transition-all duration-300 ${
-                expandedYear === data.year 
-                ? "bg-rose-600 text-white shadow-lg shadow-rose-600/20" 
-                : "bg-zinc-100 text-black hover:bg-rose-600 hover:text-white"
-              }`}
-            >
-              <span className="flex items-center gap-2">
-                {expandedYear === data.year ? "Close Report" : "View Season Details"}
-              </span>
-              {expandedYear === data.year ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-            </button>
-
-            {/* CONTENUTO ESPANDIBILE */}
-            {expandedYear === data.year && (
-              <div className="mt-6 space-y-3 animate-in fade-in zoom-in-95 duration-500">
-                {data.championships.map((champ, champIndex) => (
-                  <div key={champIndex} className="bg-black/40 rounded-xl border border-white/5 overflow-hidden">
-                    <button
-                      onClick={() => toggleChampionship(champ.championshipName)}
-                      className="w-full flex justify-between items-center p-4 text-left hover:bg-white/5 transition-colors"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-rose-500 to-purple-600 flex items-center justify-center shadow-lg">
-                          <Trophy size={16} className="text-white" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-black uppercase italic text-white leading-tight">{champ.championshipName}</p>
-                          <p className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">{champ.categoryDetail}</p>
-                        </div>
-                      </div>
-                      {expandedChampionship === champ.championshipName ? <ChevronUp size={16} className="text-rose-500" /> : <ChevronDown size={16} className="text-zinc-600" />}
-                    </button>
-
-                    {expandedChampionship === champ.championshipName && (
-                      <div className="p-3 pt-0 space-y-1.5">
-                        {champ.events.map((event, eventIndex) => (
-                          <div key={eventIndex} className="bg-zinc-900/80 rounded-lg border border-white/5">
-                            <button
-                              onClick={() => toggleEvent(event.eventName)}
-                              className="w-full flex justify-between items-center p-3 text-[11px] font-bold uppercase italic hover:text-rose-500 transition-colors"
+                    <div className="space-y-6">
+                        {careerData.map((data, index) => (
+                            <div 
+                                key={index} 
+                                className="group bg-zinc-900/40 backdrop-blur-md rounded-xl border border-white/5 overflow-hidden transition-all hover:border-rose-500/30"
                             >
-                              <span className="flex items-center gap-2">
-                                <Flag size={12} className="text-rose-600" />
-                                {event.eventName}
-                              </span>
-                              {expandedEvent === event.eventName ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                            </button>
+                                <div className="p-5 md:p-7">
+                                    {/* HEADER ANNO - Layout corretto per mobile */}
+                                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 mb-6">
+                                        <span className="text-4xl md:text-5xl font-black italic text-white/10 leading-none group-hover:text-rose-500/20 transition-colors">
+                                            {data.year}
+                                        </span>
+                                        <div>
+                                            <h3 className="text-lg md:text-xl font-black uppercase italic text-white leading-tight">
+                                                {data.category}
+                                            </h3>
+                                            <p className="text-[10px] font-bold uppercase tracking-widest text-rose-500 mt-1 opacity-80">
+                                                {data.team} <span className="mx-1 text-zinc-700">|</span> {data.engine}
+                                            </p>
+                                        </div>
+                                    </div>
 
-                            {expandedEvent === event.eventName && (
-                              <div className="px-3 pb-3">
-                                <table className="w-full text-left">
-                                  <tbody className="divide-y divide-white/5">
-                                    {event.results.map((result, resIndex) => (
-                                      <tr key={resIndex} className="group/row">
-                                        <td className="py-2 text-[11px] font-medium text-zinc-400 uppercase italic group-hover/row:text-white transition-colors">
-                                          {result.session}
-                                        </td>
-                                        <td className="py-2 text-right">
-                                          <span className="inline-block bg-white/5 text-rose-500 text-[10px] font-black px-2 py-0.5 -skew-x-12 group-hover/row:bg-rose-600 group-hover/row:text-white transition-all">
-                                            {result.position}
-                                          </span>
-                                        </td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
-                              </div>
-                            )}
-                          </div>
+                                    {/* QUICK STATS - Griglia flessibile */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-6">
+                                        {data.summary.map((stat, statIndex) => (
+                                            <div key={statIndex} className="bg-white/5 p-3 rounded-lg flex items-center justify-between border border-white/5">
+                                                <div>
+                                                    <p className="text-[8px] text-zinc-500 uppercase font-black tracking-tighter">{stat.label}</p>
+                                                    <p className="text-lg font-black text-white italic leading-none">{stat.value}</p>
+                                                </div>
+                                                <div className="text-rose-500/50 scale-75">{stat.icon}</div>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* BOTTONE ACCORDION */}
+                                    <button
+                                        onClick={() => toggleYear(data.year)}
+                                        className={`w-full flex justify-between items-center py-2.5 px-5 rounded-lg font-black uppercase italic text-[10px] tracking-widest transition-all ${
+                                            expandedYear === data.year 
+                                            ? "bg-rose-600 text-white shadow-lg shadow-rose-600/20" 
+                                            : "bg-zinc-100 text-black hover:bg-rose-600 hover:text-white"
+                                        }`}
+                                    >
+                                        {expandedYear === data.year ? "Chiudi Stagione" : "Dettagli Stagione"}
+                                        {expandedYear === data.year ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                                    </button>
+
+                                    {/* CONTENUTO ESPANDIBILE */}
+                                    {expandedYear === data.year && (
+                                        <div className="mt-4 space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                                            {data.championships.map((champ, champIndex) => (
+                                                <div key={champIndex} className="bg-black/40 rounded-lg border border-white/5 overflow-hidden">
+                                                    <button
+                                                        onClick={() => toggleChampionship(champ.championshipName)}
+                                                        className="w-full flex justify-between items-center p-3 text-left hover:bg-white/5 transition-colors"
+                                                    >
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="w-8 h-8 rounded-full bg-rose-600 flex items-center justify-center flex-shrink-0">
+                                                                <Trophy size={14} className="text-white" />
+                                                            </div>
+                                                            <div className="pr-4">
+                                                                <p className="text-[11px] font-black uppercase italic text-white leading-tight">{champ.championshipName}</p>
+                                                                <p className="text-[9px] text-zinc-500 uppercase mt-0.5">{champ.categoryDetail}</p>
+                                                            </div>
+                                                        </div>
+                                                        {expandedChampionship === champ.championshipName ? <ChevronUp size={14} className="text-rose-500" /> : <ChevronDown size={14} className="text-zinc-600" />}
+                                                    </button>
+
+                                                    {expandedChampionship === champ.championshipName && (
+                                                        <div className="p-2 pt-0 space-y-1">
+                                                            {champ.events.map((event, eventIndex) => (
+                                                                <div key={eventIndex} className="bg-zinc-900/60 rounded-md border border-white/5">
+                                                                    <button
+                                                                        onClick={() => setExpandedEvent(expandedEvent === event.eventName ? null : event.eventName)}
+                                                                        className="w-full flex justify-between items-center p-2.5 text-[10px] font-bold uppercase italic text-zinc-300"
+                                                                    >
+                                                                        <span className="flex items-center gap-2">
+                                                                            <Flag size={10} className="text-rose-600" />
+                                                                            {event.eventName}
+                                                                        </span>
+                                                                        {expandedEvent === event.eventName ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                                                                    </button>
+
+                                                                    {expandedEvent === event.eventName && (
+                                                                        <div className="px-2.5 pb-2.5 overflow-x-auto">
+                                                                            <table className="w-full text-left min-w-[200px]">
+                                                                                <tbody className="divide-y divide-white/5">
+                                                                                    {event.results.map((result, resIndex) => (
+                                                                                        <tr key={resIndex}>
+                                                                                            <td className="py-1.5 text-[10px] text-zinc-500 uppercase italic">{result.session}</td>
+                                                                                            <td className="py-1.5 text-right">
+                                                                                                <span className="text-rose-500 text-[10px] font-black italic">{result.position}</span>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    ))}
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
+                    </div>
 
-    {/* CTA FINALE - Più snella e concentrata */}
-    <div className="mt-24 relative group max-w-4xl mx-auto">
-      <div className="absolute -inset-1 bg-gradient-to-r from-rose-600 via-purple-600 to-blue-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
-      <div className="relative bg-zinc-900/80 border border-white/10 p-10 rounded-2xl text-center backdrop-blur-md">
-        <h3 className="text-3xl font-black uppercase italic mb-4">Driving to the <span className="text-rose-600">Future</span></h3>
-        <p className="text-zinc-400 text-sm font-light mb-8 leading-relaxed max-w-xl mx-auto">
-          Il prossimo obiettivo è la <span className="text-white font-bold">Formula Regional</span>. 
-          Unisciti al mio team come Partner Ufficiale.
-        </p>
-        <Link 
-          to="/sponsor" 
-          className="inline-block bg-white text-black font-bold uppercase italic py-4 px-10 rounded-full hover:bg-rose-600 hover:text-white transition-all transform hover:scale-105 text-sm tracking-[0.2em]"
-        >
-          Become a Partner
-        </Link>
-      </div>
-    </div>
-  </div>
-</section>
-        </>
+                    {/* CTA - Più snella */}
+                    <div className="mt-16 text-center bg-zinc-900/50 border border-white/5 p-8 rounded-xl backdrop-blur-sm max-w-2xl mx-auto">
+                        <h3 className="text-xl font-black uppercase italic mb-2 text-white">Verso la <span className="text-rose-600">Formula Regional</span></h3>
+                        <p className="text-zinc-500 text-xs mb-6 max-w-sm mx-auto">Unisciti al mio team come Partner Ufficiale per la prossima stagione.</p>
+                        <Link 
+                            to="/sponsor" 
+                            className="inline-block bg-white text-black font-bold uppercase italic py-3 px-8 rounded-full hover:bg-rose-600 hover:text-white transition-all text-[11px] tracking-widest"
+                        >
+                            Become a Partner
+                        </Link>
+                    </div>
+                </div>
+            </section>
+        </div>
     );
 };
 

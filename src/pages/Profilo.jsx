@@ -11,7 +11,7 @@ const ProfiloPage = () => {
   const stats = [
     { label: "Data di Nascita", value: "04/05/2005" },
     { label: "Nazionalità", value: "Italiana" },
-    { label: "Residenza", value: "Monza, IT" },
+    { label: "Residenza", value: "Palermo, IT" },
     { label: "Peso / Altezza", value: "68kg / 178cm" },
     { label: "Hobby", value: "Sim Racing, Sports, Games" },
   ];

@@ -10,13 +10,13 @@ export const galleryData = {
   "2025": [
     { 
       id: "mugello-2025", 
-      title: "Campionato Italiano F4 - Mugello", 
+      title: "Campionato Italiano F4 FX - Mugello", 
       coverId: "2025_mugello_01", 
       photos: generateIds("2025_mugello", 48) 
     },
     { 
       id: "misano-2025", 
-      title: "Campionato Italiano F4 - Misano", 
+      title: "Campionato Italiano F4 FX - Misano", 
       coverId: "2025_misano_01", 
       photos: generateIds("2025_misano", 40) 
     }
